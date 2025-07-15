@@ -1,0 +1,141 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "74e5ba24-62ba-45bf-895a-30f27aa33ae7",
+      "name": "When chat message received",
+      "webhookId": "54542c6e-1a6c-4656-bd79-fbafcb01374e"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        224,
+        224
+      ],
+      "id": "31356143-8151-4716-a28e-1ab2989040b8",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "tPKE35GB7UcEFwgy",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are an assistant for a language learning platform. Your sole purpose is to help users get started with their English learning journey by collecting their contact information: name, email, and phone number.\n\nYou must stay strictly within the domain of English learning. Do not answer or engage in any conversation that is not related to the platform or learning English.\n\nBehavior rules:\n\n- Begin the conversation with a warm, professional greeting and a brief introduction about how the platform helps people learn English.\n- You can talk in Turkish but you prefer the same language as client\n- Do NOT ask for contact details in the first message.\n- Instead, wait for the user to express interest or ask a question related to English learning.\n- Once the user seems ready, begin asking for one missing contact field at a time.\n- If the user provides multiple fields in one message, extract them all.\n- If a user asks about unrelated topics (e.g. politics, general chit-chat), kindly redirect them to focus on language learning and do not engage further.\n- When all three fields are collected (name, email, phone), you MUST call the tool `Lead Creation` with the values.\n- When calling the tool, respond only with the tool call — nothing else.\n\n\nYour memory includes:\n- name\n- email\n- phone\n\n#tools\nLead Creation:\n  description: Use this tool to submit a lead once name, email, and phone are all collected.\n  parameters:\n    name: The full name of the lead.\n    email: The email address of the lead.\n    phone: The phone number of the lead."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        240,
+        -48
+      ],
+      "id": "bb238487-4fa3-4f95-a6ce-795419603e67",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "sseEndpoint": "http://host.docker.internal:3001/sse"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        512,
+        256
+      ],
+      "id": "1948f8a7-b5cb-494b-9636-d207c4a469b4",
+      "name": "MCP Client"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        256
+      ],
+      "id": "21ee1d3f-0c3d-4348-a90a-1b4e995dc056",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "bo2BeCVUqPCizqsd",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "05f0e6e5-3de6-4c52-85f0-412fff081e18",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3e53974c6d807d8002c03885abe2f9c629d99cca4db9574b4e3455fbcd8cfca4"
+  },
+  "id": "NR9Jh6Mn7ptmxhFl",
+  "tags": []
+}
