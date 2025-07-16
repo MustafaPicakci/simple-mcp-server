@@ -40,7 +40,7 @@ server.tool(
       content: [
         {
           type: "text",
-          text: `Lead successfully created`,
+          text: `completed`,
         },
       ],
     };
@@ -54,7 +54,8 @@ app.all("/mcp", async (req, res) => {
   try {
     // Check for existing session ID
     const sessionId = req.headers["mcp-session-id"];
-    let transport = any;
+    let transport;
+    console.log(sessionId);
 
     if (sessionId && transports[sessionId]) {
       // Check if the transport is of the correct type
