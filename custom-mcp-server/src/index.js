@@ -19,13 +19,11 @@ server.tool(
   "create-lead",
   "Call this tool to create new lead",
   {
-    payload: {
-      name: z.string().describe("customer name"),
-      email: z.string().email().describe("customer email"),
-      phone: z.string().describe("customer phone number"),
-    },
+    name: z.string().describe("name"),
+    email: z.string().describe("email"),
+    phone: z.string().describe("phone number"),
   },
-  async ({ payload }) => {
+  async (payload) => {
     const url = `${API_BASE}/lead`;
     const response = await axios.post(url, payload);
     if (!response) {
@@ -42,7 +40,7 @@ server.tool(
       content: [
         {
           type: "text",
-          text: response.data,
+          text: `Lead successfully created`,
         },
       ],
     };
